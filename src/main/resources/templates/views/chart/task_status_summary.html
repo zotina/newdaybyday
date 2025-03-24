@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Résumé des statuts - DaybyDay</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    .charts-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      gap: 20px;
+    }
+    .chart-container {
+      height: 400px;
+      width: 500px;
+      max-width: 100%;
+      position: relative;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .form-container {
+      width: 100%;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/side-bar}"></div>
+  
+  <div class="header">
+    <h1>Résumé des statuts</h1>
+  </div>
+  
+  <div class="form-container">
+    <div class="charts-container">
+      <!-- Graphique des tâches -->
+      <div class="chart-container">
+        <h2>Statuts des tâches</h2>
+        <canvas id="taskStatusChart"></canvas>
+      </div>
+      <!-- Graphique des factures -->
+      <div class="chart-container">
+        <h2>Statuts des factures</h2>
+        <canvas id="invoiceStatusChart"></canvas>
+      </div>
+    </div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+  </div>
+  
+  <div th:replace="~{fragments/footer}"></div>
+  
+  <script th:inline="javascript">
+    // Données pour les tâches
+    const taskStatuses = /*[[${taskStatuses}]]*/ [];
+    const taskLabels = taskStatuses.map(ts => ts.status_name);
+    const taskData = taskStatuses.map(ts => ts.percentage);
+    const taskColors = [
+      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+      '#FF9F40', '#C9CBCF', '#7BC225', '#F7464A', '#D4A5A5'
+    ].slice(0, taskStatuses.length);
+
+    const taskStatusData = {
+      labels: taskLabels,
+      datasets: [{
+        data: taskData,
+        backgroundColor: taskColors,
+        hoverOffset: 4
+      }]
+    };
+
+    new Chart(
+      document.getElementById('taskStatusChart'),
+      {
+        type: 'doughnut',
+        data: taskStatusData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { size: 14 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw || 0;
+                  return `${label}: ${value}% (${taskStatuses[context.dataIndex].task_count} tâches)`;
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+
+    // Données pour les factures
+    const invoiceStatuses = /*[[${invoiceStatuses}]]*/ [];
+    const invoiceLabels = invoiceStatuses.map(is => is.status_name);
+    const invoiceData = invoiceStatuses.map(is => is.percentage);
+    const invoiceColors = [
+      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+      '#FF9F40', '#C9CBCF', '#7BC225', '#F7464A', '#D4A5A5'
+    ].slice(0, invoiceStatuses.length);
+
+    const invoiceStatusData = {
+      labels: invoiceLabels,
+      datasets: [{
+        data: invoiceData,
+        backgroundColor: invoiceColors,
+        hoverOffset: 4
+      }]
+    };
+
+    new Chart(
+      document.getElementById('invoiceStatusChart'),
+      {
+        type: 'doughnut',
+        data: invoiceStatusData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { size: 14 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw || 0;
+                  return `${label}: ${value}% (${invoiceStatuses[context.dataIndex].invoice_count} factures)`;
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+  </script>
+</body>
+</html>

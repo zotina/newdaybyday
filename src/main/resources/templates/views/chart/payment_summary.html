@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Résumé des paiements - DaybyDay</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+  <div th:replace="~{fragments/side-bar}"></div>
+  
+  <div class="header">
+    <h1>Résumé des paiements</h1>
+  </div>
+  
+  <div class="form-container">
+    <h2 th:text="${paymentData?.paymentMonth ?: 'Mois inconnu'}"></h2>
+    <p th:text="'ID: ' + ${paymentData?.paymentExternalId ?: 'N/A'}"></p>
+    
+    <div class="chart-container">
+      <canvas id="paymentSummaryChart"></canvas>
+    </div>
+    
+    <div class="key-metrics">
+      <div class="metric">
+        <div class="metric-label">Total Paiements</div>
+        <div class="metric-value" th:text="${paymentData?.totalPayments ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total Factures</div>
+        <div class="metric-value" th:text="${paymentData?.totalInvoices ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Payé</div>
+        <div class="metric-value" th:text="${paymentData?.totalPaidAmount != null ? paymentData.totalPaidAmount + ' €' : '0 €'}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Restant</div>
+        <div class="metric-value" th:text="${paymentData?.outstandingAmount != null ? paymentData.outstandingAmount + ' €' : '0 €'}"></div>
+      </div>
+    </div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+  </div>
+  
+  <div th:replace="~{fragments/footer}"></div>
+  
+  <script>
+    const formatEuro = (value) => {
+      if (value === null || value === undefined) return '0 €';
+      return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
+    };
+
+    const paymentData = {
+      payment_month: /*[[${paymentData?.paymentMonth}]]*/ null,
+      payment_external_id: /*[[${paymentData?.paymentExternalId}]]*/ null,
+      total_payments: /*[[${paymentData?.totalPayments}]]*/ 0,
+      total_invoices: /*[[${paymentData?.totalInvoices}]]*/ 0,
+      total_paid_amount: /*[[${paymentData?.totalPaidAmount}]]*/ null,
+      total_invoiced_amount: /*[[${paymentData?.totalInvoicedAmount}]]*/ null,
+      outstanding_amount: /*[[${paymentData?.outstandingAmount}]]*/ null
+    };
+
+    new Chart(
+      document.getElementById('paymentSummaryChart'),
+      {
+        type: 'bar',
+        data: {
+          labels: ['Aperçu des paiements'],
+          datasets: [
+            { label: 'Montant payé', data: [paymentData.total_paid_amount || 0], backgroundColor: '#3b82f6', borderColor: '#2563eb', borderWidth: 1 },
+            { label: 'Montant facturé', data: [paymentData.total_invoiced_amount || 0], backgroundColor: '#6366f1', borderColor: '#4f46e5', borderWidth: 1 },
+            { label: 'Montant restant', data: [paymentData.outstanding_amount || 0], backgroundColor: '#f97316', borderColor: '#ea580c', borderWidth: 1 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            title: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) { return formatEuro(value); }
+              }
+            }
+          }
+        }
+      }
+    );
+  </script>
+</body>
+</html>

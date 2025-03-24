@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiements - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script>
+        function confirmDelete(button) {
+            var externalId = button.getAttribute('data-external-id');
+            if (confirm("Voulez-vous vraiment supprimer le paiement " + externalId + " ?")) {
+                document.getElementById("deleteForm-" + externalId).submit();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <div>
+            <h1>Paiements</h1>
+        </div>
+    </div>
+
+    <div class="table-container" th:if="${payments}">
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Montant</th>
+                        <th>Facture</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="payment : ${payments}">
+                        <td th:text="${payment.externalId}"></td>
+                        <td th:text="${payment.amount} + ' €'"></td>
+                        <td th:text="${payment.invoice?.get('external_id')}"></td>
+                        <td>
+                            <a th:href="@{/payment/update(externalId=${payment.externalId})}" class="btn btn-edit">Modifier</a>
+                            <form th:id="'deleteForm-' + ${payment.externalId}"
+                                  th:action="@{/payment/delete}" 
+                                  th:method="post" 
+                                  style="display:inline;">
+                                <input type="hidden" name="externalId" th:value="${payment.externalId}">
+                                <button type="button" 
+                                        th:attr="data-external-id=${payment.externalId}"
+                                        onclick="confirmDelete(this)" 
+                                        class="btn btn-delete">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(payments)}">
+                        <td colspan="4">Aucun paiement trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

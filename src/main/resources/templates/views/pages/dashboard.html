@@ -1,20 +1,25 @@
-<div th:replace="fragments/side-bar"></div>
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DaybyDay</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div> 
     <div class="header">
         <div>
-            <h1>Bonjour, John 👋</h1>
+            <h1>Bonjour, 👋</h1>
             <p>Voici un aperçu de votre activité aujourd'hui</p>
         </div>
-        <button class="new-project-btn">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Nouveau projet
-        </button>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
+    
+    <div class="stats-grid" th:if="${dashboardData}">
+        <a href="/client/all" class="stat-card">
             <div class="stat-icon blue">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -22,23 +27,31 @@
             </div>
             <div class="stat-info">
                 <h2>Clients actifs</h2>
-                <p class="stat-value">1,257</p>
-                <p class="stat-change positive">+12% ce mois</p>
+                <p class="stat-value" th:text="${dashboardData.totalClients}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.totalClientsPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.totalClientsPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.totalClientsPercentage, 1, 1)}"></span>% ce mois
+                </p>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon green">
+        </a>
+        
+        <a href="/task/all" class="stat-card">
+            <div class="stat-icon cyan">
                 <svg viewBox="0 0 24 24">
-                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <path d="M3 6v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 0h14v12H5V6zm2 3v2h6V9H7zm0 4v2h4v-2H7zm8 0h2v2h-2v-2zm-4 0h2v2h-2v-2z"/>
                 </svg>
             </div>
             <div class="stat-info">
-                <h2>Revenus</h2>
-                <p class="stat-value">€23,457</p>
-                <p class="stat-change positive">+8% ce mois</p>
+                <h2>Tâches</h2>
+                <p class="stat-value" th:text="${dashboardData.totalTasks}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.totalTasksPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.totalTasksPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.totalTasksPercentage, 1, 1)}"></span>% ce mois
+                </p>
             </div>
-        </div>
-        <div class="stat-card">
+        </a>
+        
+        <a href="/project/all" class="stat-card">
             <div class="stat-icon purple">
                 <svg viewBox="0 0 24 24">
                     <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -46,158 +59,64 @@
             </div>
             <div class="stat-info">
                 <h2>Projets actifs</h2>
-                <p class="stat-value">458</p>
-                <p class="stat-change positive">+4% ce mois</p>
+                <p class="stat-value" th:text="${dashboardData.totalProjects}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.totalProjectsPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.totalProjectsPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.totalProjectsPercentage, 1, 1)}"></span>% ce mois
+                </p>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon amber">
+        </a>
+        
+        <a href="/payment/all" class="stat-card">
+            <div class="stat-icon green">
                 <svg viewBox="0 0 24 24">
-                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
             <div class="stat-info">
-                <h2>Heures travaillées</h2>
-                <p class="stat-value">237</p>
-                <p class="stat-change">Cette semaine</p>
+                <h2>Factures payées</h2>
+                <p class="stat-value" th:text="${dashboardData.payment}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.paymentPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.paymentPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.paymentPercentage, 1, 1)}"></span>% ce mois
+                </p>
             </div>
-        </div>
+        </a>
+        
+        <a href="/offer/all" class="stat-card">
+            <div class="stat-icon teal">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L4 14h8v8l8-12h-8V2z"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h2>Offre</h2>
+                <p class="stat-value" th:text="${dashboardData.offer}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.offerPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.offerPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.offerPercentage, 1, 1)}"></span>% ce mois
+                </p>
+            </div>
+        </a>
+        
+        <a href="/invoice/all" class="stat-card">
+            <div class="stat-icon cyan">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.25 4l1.1 2H20v2H9.86L7.1 15H18v2H6.24L4 6H2V4h3.25z"/>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h2>Invoices</h2>
+                <p class="stat-value" th:text="${dashboardData.invoices}"></p>
+                <p class="stat-change" th:classappend="${dashboardData.invoicesPercentage >= 0 ? 'positive' : 'negative'}">
+                    <span th:text="${dashboardData.invoicesPercentage >= 0 ? '+' : ''}"></span>
+                    <span th:text="${#numbers.formatDecimal(dashboardData.invoicesPercentage, 1, 1)}"></span>% ce mois
+                </p>
+            </div>
+        </a>
     </div>
 
-    <!-- Charts Section -->
-    <div class="charts-grid">
-        <div class="chart-card large">
-            <div class="chart-header">
-                <h2>Revenus mensuels</h2>
-                <div class="chart-actions">
-                    <select class="chart-select">
-                        <option>2024</option>
-                        <option>2023</option>
-                    </select>
-                </div>
-            </div>
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-        <div class="chart-card">
-            <div class="chart-header">
-                <h2>Répartition des projets</h2>
-            </div>
-            <div class="chart-container">
-                <canvas id="projectsChart"></canvas>
-            </div>
-        </div>
-        <div class="chart-card">
-            <div class="chart-header">
-                <h2>Heures par catégorie</h2>
-            </div>
-            <div class="chart-container">
-                <canvas id="hoursChart"></canvas>
-            </div>
-        </div>
-    </div>
 
-    <!-- Projects Table -->
-    <div class="table-container">
-        <div class="table-header">
-            <h2>Projets récents</h2>
-            <a href="#" class="view-all">Voir tout</a>
-        </div>
-        <div class="table-responsive">
-            <table class="projects-table">
-                <thead>
-                    <tr>
-                        <th>Projet</th>
-                        <th>Client</th>
-                        <th>Budget</th>
-                        <th>Status</th>
-                        <th>Date limite</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="project-info">
-                                <div class="project-initials bg-blue">WD</div>
-                                <span>Website Design</span>
-                            </div>
-                        </td>
-                        <td>Tech Solutions</td>
-                        <td>€8,500</td>
-                        <td><span class="status-badge in-progress">En cours</span></td>
-                        <td>25 Mars 2025</td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="project-info">
-                                <div class="project-initials bg-green">MA</div>
-                                <span>Mobile App</span>
-                            </div>
-                        </td>
-                        <td>StartUp Inc</td>
-                        <td>€12,000</td>
-                        <td><span class="status-badge completed">Terminé</span></td>
-                        <td>15 Avril 2025</td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="project-info">
-                                <div class="project-initials bg-purple">BR</div>
-                                <span>Brand Redesign</span>
-                            </div>
-                        </td>
-                        <td>Fashion Co</td>
-                        <td>€5,800</td>
-                        <td><span class="status-badge pending">En attente</span></td>
-                        <td>30 Mars 2025</td>
-                        <td>
-                            <div class="table-actions">
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-<div th:replace="fragments/footer"></div>
+    <div th:replace="~{fragments/footer}"></div> 
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>État de la facture - DaybyDay</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+  <div th:replace="~{fragments/side-bar}"></div>
+  
+  <div class="header">
+    <h1>État de la facture <span th:classappend="${invoiceData?.invoiceStatus == 'paid' ? 'status-paid' : ''}" class="status-badge" th:text="${invoiceData?.invoiceStatus ?: 'Inconnu'}"></span></h1>
+  </div>
+  
+  <div class="form-container">
+    <h2 th:text="'Facture #' + ${invoiceData?.invoiceExternalId ?: 'N/A'}"></h2>
+    <p th:text="'ID: ' + ${invoiceData?.invoiceExternalId ?: 'N/A'}"></p>
+    
+    <div class="chart-container">
+      <canvas id="invoiceStatusChart"></canvas>
+    </div>
+    
+    <div class="key-metrics">
+      <div class="metric">
+        <div class="metric-label">Total Factures</div>
+        <div class="metric-value" th:text="${invoiceData?.totalInvoices ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total Paiements</div>
+        <div class="metric-value" th:text="${invoiceData?.totalPayments ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Facturé</div>
+        <div class="metric-value" th:text="${invoiceData?.totalInvoicedAmount != null ? invoiceData.totalInvoicedAmount + ' €' : '0 €'}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Payé</div>
+        <div class="metric-value" th:text="${invoiceData?.totalPaidAmount != null ? invoiceData.totalPaidAmount + ' €' : '0 €'}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Restant</div>
+        <div class="metric-value" th:text="${invoiceData?.outstandingAmount != null ? invoiceData.outstandingAmount + ' €' : '0 €'}"></div>
+      </div>
+    </div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+  </div>
+  
+  <div th:replace="~{fragments/footer}"></div>
+  
+  <script>
+    const formatEuro = (value) => {
+      if (value === null || value === undefined) return '0 €';
+      return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
+    };
+
+    const invoiceData = {
+      invoice_status: /*[[${invoiceData?.invoiceStatus}]]*/ null,
+      invoice_external_id: /*[[${invoiceData?.invoiceExternalId}]]*/ null,
+      total_invoices: /*[[${invoiceData?.totalInvoices}]]*/ 0,
+      total_payments: /*[[${invoiceData?.totalPayments}]]*/ 0,
+      total_paid_amount: /*[[${invoiceData?.totalPaidAmount}]]*/ null,
+      total_invoiced_amount: /*[[${invoiceData?.totalInvoicedAmount}]]*/ null,
+      outstanding_amount: /*[[${invoiceData?.outstandingAmount}]]*/ null
+    };
+
+    new Chart(
+      document.getElementById('invoiceStatusChart'),
+      {
+        type: 'pie',
+        data: {
+          labels: ['Montant payé', 'Montant restant'],
+          datasets: [{
+            data: [
+              invoiceData.total_paid_amount || 0,
+              invoiceData.outstanding_amount || 0
+            ],
+            backgroundColor: ['#10b981', '#f97316'],
+            borderColor: ['#059669', '#ea580c'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw;
+                  return `${label}: ${formatEuro(value)}`;
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+  </script>
+</body>
+</html>

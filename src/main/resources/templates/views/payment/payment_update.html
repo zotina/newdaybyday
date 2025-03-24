@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mettre à jour un paiement - DaybyDay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <h1>Mettre à jour le paiement</h1>
+    </div>
+
+    <div class="form-container">
+        <form th:action="@{/payment/update}" th:method="post">
+            <!-- Utilisation de externalId du modèle si payment est null -->
+            <input type="hidden" name="externalId" th:value="${externalId != null ? externalId : payment?.externalId}">
+            <div class="form-group">
+                <label for="amount">Montant :</label>
+                <input type="number" id="amount" name="amount" step="0.01" th:value="${payment?.amount}">
+            </div>
+            <button type="submit" class="btn btn-edit">Mettre à jour</button>
+            <a th:href="@{/payments}" class="btn btn-cancel">Annuler</a>
+        </form>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+    </div>
+
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <div>
+            <h1>Projets</h1>
+        </div>
+    </div>
+
+    <!-- Liste des projets -->
+    <div class="table-container" th:if="${projects}">
+        <div class="table-header">
+            <h2>Liste des projets</h2>
+            <a href="#" class="view-all">Voir tout</a>
+        </div>
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Titre</th>
+                        <th>Créé le</th>
+                        <th>Échéance</th>
+                        <th>Assigné à</th>
+                        <th>Statut</th>
+                        <th>Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="project : ${projects}">
+                        <td th:text="${project.externalId}"></td>
+                        <td th:text="${project.title}"></td>
+                        <td th:text="${project.createdAt}"></td>
+                        <td th:text="${project.deadline}"></td>
+                        <td th:text="${project.assignedUser}"></td>
+                        <td>
+                            <span th:text="${project.status?.title}" th:style="'color: ' + ${project.status?.color}"></span>
+                        </td>
+                        <td th:text="${project.client}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(projects)}">
+                        <td colspan="7">Aucun projet trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

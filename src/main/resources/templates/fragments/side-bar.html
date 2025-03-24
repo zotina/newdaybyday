@@ -11,7 +11,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>DaybyDay</h2>
+                <h2>DAYBYDAY</h2>
                 <div class="sidebar-toggle" id="sidebar-toggle">
                     <svg viewBox="0 0 24 24">
                         <path d="M4 6h16M4 12h16M4 18h16"/>
@@ -19,67 +19,88 @@
                 </div>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item">
+                <a href="/api/dashboard" class="nav-item">
                     <svg viewBox="0 0 24 24" class="nav-icon">
                         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
                     <span>Tableau de bord</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/client/all" class="nav-item">
                     <svg viewBox="0 0 24 24" class="nav-icon">
                         <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                     <span>Clients</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/project/all" class="nav-item">
                     <svg viewBox="0 0 24 24" class="nav-icon">
                         <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     <span>Projets</span>
                 </a>
-                <a href="#" class="nav-item active">
-                    <svg viewBox="0 0 24 24" class="nav-icon">
-                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                    <span>Produits</span>
-                </a>
-                <a href="#" class="nav-item">
+                <a href="/task/all" class="nav-item">
+                        <svg viewBox="0 0 24 24" class="nav-icon">
+                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                        <span>Tache</span>
+                    </a>
+                <a href="/offer/all" class="nav-item">
                     <svg viewBox="0 0 24 24" class="nav-icon">
                         <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
-                    <span>Calendrier</span>
+                    <span>Offre</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/invoice/all" class="nav-item">
                     <svg viewBox="0 0 24 24" class="nav-icon">
                         <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                     </svg>
-                    <span>Paramètres</span>
+                    <span>Facture</span>
                 </a>
+                <a href="/payment/all" class="nav-item">
+                    <svg viewBox="0 0 24 24" class="nav-icon">
+                        <path d="M2 7h20M2 11h20M6 15h2m4 0h6m-10 4h6m-9 2h12a2 2 0 002-2V5a2 2 0 00-2-2H3a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Paiement</span>
+                </a>    
+                <a href="/chart/task-status-summary" class="nav-item">
+                    <svg viewBox="0 0 24 24" class="nav-icon">
+                        <path d="M12 1L3 7v10l9 6 9-6V7l-9-6zm-1 12h-2v-2h2v2zm0 4h-2v-2h2v2z"/>
+                    </svg>
+                    <span>Résume des statuts</span>
+                </a>
+                <a href="/chart/payment-summary-by-month" class="nav-item">
+                    <svg viewBox="0 0 24 24" class="nav-icon">
+                        <path d="M20 3H4c-1.1 0-1.99.9-1.99 2L2 19c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM4 5h16v14H4V5zM12 9h2v4h-2z"/>
+                    </svg>
+                    <span>Récapitulatif des paiements</span>
+                </a>    
+                <a href="/settings/update-discount" class="nav-item">
+                    <svg viewBox="0 0 24 24" class="nav-icon">
+                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                    <span>Modification remise</span>
+                </a>      
+                <a href="/api/auth/logout" class="nav-item">
+                    <svg viewBox="0 0 24 24" class="nav-icon"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/></svg>
+                    <span>Déconnexion</span>
+                </a>                                    
             </nav>
-            <div class="sidebar-footer">
-                <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Profile" class="avatar">
-                <div class="user-info">
-                    <p class="user-name">John Doe</p>
-                    <p class="user-email">john@daybyday.com</p>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <div class="search-container">
-                    <svg viewBox="0 0 24 24" class="search-icon">
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <input type="text" placeholder="Rechercher..." class="search-input">
-                </div>
+                <div class="top-bar">
+                    <div class="search-container">
+                        <svg viewBox="0 0 24 24" class="search-icon">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <input type="text" placeholder="Rechercher..." class="search-input">
+                    </div>
                 <div class="top-bar-actions">
                     <button class="notification-btn">
                         <svg viewBox="0 0 24 24">
                             <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                         </svg>
-                        <span class="notification-badge">3</span>
+                        <span class="notification-badge"></span>
                     </button>
                 </div>
             </div>

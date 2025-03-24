@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header"> 
+        <div>
+            <h1>Clients</h1>
+        </div>
+    </div>
+
+    <!-- Liste des clients -->
+    <div class="table-container" th:if="${clients}">
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Nom de l’entreprise</th>
+                        <th>TVA</th>
+                        <th>Adresse</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.externalId}"></td>
+                        <td th:text="${client.companyName}"></td>
+                        <td th:text="${client.vat}"></td>
+                        <td th:text="${client.address}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(clients)}">
+                        <td colspan="4">Aucun client trouvé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <a th:href="@{/client/all(page=${prevPage}, perPage=${perPage})}" class="pagination-btn" th:if="${currentPage > 1}">Précédent</a>
+        <span>Page <span th:text="${currentPage}"></span></span>
+        <a th:href="@{/client/all(page=${nextPage}, perPage=${perPage})}" class="pagination-btn">Suivant</a>
+    </div>
+
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>
