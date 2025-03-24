@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Résumé des paiements par mois - DaybyDay</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    .chart-container { height: 300px; position: relative; margin: 20px 0; }
+    .key-metrics { display: flex; justify-content: space-between; margin-top: 15px; flex-wrap: wrap; gap: 10px; }
+    .metric { background-color: #f8fafc; border-radius: 8px; padding: 12px; flex: 1; min-width: 120px; text-align: center; }
+    .metric-label { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+    .metric-value { font-size: 16px; font-weight: 600; color: #334155; }
+  </style>
+</head>
+<body>
+  <div th:replace="~{fragments/side-bar}"></div>
+  
+  <div class="header">
+    <h1>Résumé des paiements par mois</h1>
+  </div>
+  
+  <div class="form-container">
+    <h2 th:text="'Année ' + ${year}"></h2>
+    
+    <div class="chart-container">
+      <canvas id="paymentSummaryChart"></canvas>
+    </div>
+    
+    <div class="key-metrics">
+      <div class="metric">
+        <div class="metric-label">Total Annuel Payé</div>
+        <div class="metric-value" th:text="${totalAmount != null ? totalAmount + ' €' : '0 €'}"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div th:replace="~{fragments/footer}"></div>
+  
+  <script th:inline="javascript">
+    const formatEuro = (value) => {
+      if (value === null || value === undefined) return '0 €';
+      return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    };
+
+    // Injection explicite avec JSON.stringify pour garantir un tableau
+    const paymentMonths = /*[[${paymentMonths}]]*/ [];
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const paidData = Array(12).fill(0);
+
+    if (paymentMonths && paymentMonths.length > 0) {
+      paymentMonths.forEach(pm => {
+        const monthIndex = new Date(pm.paymentMonth + '-01').getMonth();
+        paidData[monthIndex] = pm.amount_total || 0;
+      });
+    } else {
+      console.log("No payment months data available");
+    }
+    console.log("Paid Data:", paidData);
+
+    const revenueData = {
+      labels: months,
+      datasets: [
+        {
+          label: 'Paiements reçus',
+          data: paidData,
+          borderColor: '#10b981',
+          backgroundColor: '#10b98133',
+          fill: true,
+          tension: 0.4
+        }
+      ]
+    };
+
+    new Chart(
+      document.getElementById('paymentSummaryChart'),
+      {
+        type: 'line',
+        data: revenueData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) { return value.toLocaleString() + ' €'; }
+              }
+            }
+          }
+        }
+      }
+    );
+  </script>
+</body>
+</html>

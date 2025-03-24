@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offres - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <div>
+            <h1>Offres</h1>
+        </div>
+    </div>
+
+    <!-- Liste des offres -->
+    <div class="table-container" th:if="${offers}">
+        <div class="table-header">
+            <h2>Liste des offres</h2>
+            <a href="#" class="view-all">Voir tout</a>
+        </div>
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Envoyée le</th>
+                        <th>Échéance</th>
+                        <th>Statut</th>
+                        <th>Client ID</th>
+                        <th>Lignes de facture</th>
+                        <th>Facture</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="offer : ${offers}">
+                        <td th:text="${offer.externalId}"></td>
+                        <td th:text="${offer.sentAt}"></td>
+                        <td th:text="${offer.dueAt}"></td>
+                        <td th:text="${offer.status}"></td>
+                        <td th:text="${offer.clientId}"></td>
+                        <td th:text="${offer.invoiceLines?.size()} + ' lignes'"></td>
+                        <td th:text="${offer.invoice?.get('status')}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(offers)}">
+                        <td colspan="7">Aucune offre trouvée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

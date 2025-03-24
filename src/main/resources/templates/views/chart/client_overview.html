@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aperçu du client - DaybyDay</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+</head>
+<body>
+  <div th:replace="~{fragments/side-bar}"></div>
+  
+  <div class="header">
+    <h1>Aperçu du client</h1>
+  </div>
+  
+  <div class="form-container">
+    <h2 th:text="${clientData?.companyName ?: 'Client inconnu'}"></h2>
+    <p th:text="'ID: ' + ${clientData?.externalId ?: 'N/A'}"></p>
+    
+    <div class="chart-container">
+      <canvas id="clientOverviewChart"></canvas>
+    </div>
+    
+    <div class="key-metrics">
+      <div class="metric">
+        <div class="metric-label">Client ID</div>
+        <div class="metric-value" th:text="${clientData?.clientId ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total Factures</div>
+        <div class="metric-value" th:text="${clientData?.totalInvoices ?: 0}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Facturé</div>
+        <div class="metric-value" th:text="${clientData?.totalInvoicedAmount != null ? clientData.totalInvoicedAmount + ' €' : '0 €'}"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Montant Payé</div>
+        <div class="metric-value" th:text="${clientData?.totalPaidAmount != null ? clientData.totalPaidAmount + ' €' : '0 €'}"></div>
+      </div>
+    </div>
+    
+    <a th:href="@{/payments}" class="btn btn-cancel">Retour</a>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+  </div>
+  
+  <div th:replace="~{fragments/footer}"></div>
+  
+  <script>
+    const clientData = {
+      external_id: /*[[${clientData?.externalId}]]*/ null,
+      client_id: /*[[${clientData?.clientId}]]*/ 0,
+      company_name: /*[[${clientData?.companyName}]]*/ null,
+      total_invoices: /*[[${clientData?.totalInvoices}]]*/ 0,
+      total_invoiced_amount: /*[[${clientData?.totalInvoicedAmount}]]*/ null,
+      total_paid_amount: /*[[${clientData?.totalPaidAmount}]]*/ null,
+      outstanding_amount: /*[[${clientData?.outstandingAmount}]]*/ null
+    };
+
+    new Chart(
+      document.getElementById('clientOverviewChart'),
+      {
+        type: 'doughnut',
+        data: {
+          labels: clientData.total_invoices > 0 ? ['Activité'] : ['Aucune activité'],
+          datasets: [{
+            data: [clientData.total_invoices > 0 ? clientData.total_invoices : 1],
+            backgroundColor: clientData.total_invoices > 0 ? ['#10b981'] : ['#cbd5e1'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          }
+        }
+      }
+    );
+  </script>
+</body>
+</html>

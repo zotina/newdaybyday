@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factures - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <div>
+            <h1>Invoices</h1>
+        </div>
+    </div>
+
+    
+    <div th:if="${amountDue != null}" class="amount-due">
+        <h2>Montant dû : <span th:text="${amountDue} + ' €'"></span></h2>
+    </div>
+
+    
+    <div class="table-container" th:if="${invoices}">
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Statut</th>
+                        <th>Client</th>
+                        <th>Lignes</th>
+                        <th>Offre</th>
+                        <th>Paiements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="invoice : ${invoices}">
+                        <td th:text="${invoice.externalId}"></td>
+                        <td th:text="${invoice.status}"></td>
+                        <td th:text="${invoice.client?.get('company_name')}"></td>
+                        <td th:text="${invoice.invoiceLines?.size()} + ' lignes'"></td>
+                        <td th:text="${invoice.offer?.get('external_id')}"></td>
+                        <td th:text="${invoice.payments?.size()} + ' paiements'"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(invoices)}">
+                        <td colspan="6">Aucune facture trouvée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

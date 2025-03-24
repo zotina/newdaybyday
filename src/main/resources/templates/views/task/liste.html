@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tâches - DaybyDay</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/side-bar}"></div>
+
+    <div class="header">
+        <div>
+            <h1>Tâches</h1>
+        </div>
+    </div>
+
+    <!-- Liste des tâches -->
+    <div class="table-container" th:if="${tasks}">
+        <div class="table-responsive">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID Externe</th>
+                        <th>Titre</th>
+                        <th>Créée le</th>
+                        <th>Échéance</th>
+                        <th>Assignée à</th>
+                        <th>Statut</th>
+                        <th>Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="task : ${tasks}">
+                        <td th:text="${task.externalId}"></td>
+                        <td th:text="${task.title}"></td>
+                        <td th:text="${task.createdAt}"></td>
+                        <td th:text="${task.deadline}"></td>
+                        <td th:text="${task.assignedUser}"></td>
+                        <td>
+                            <span th:text="${task.status?.title}" th:style="'color: ' + ${task.status?.color}"></span>
+                        </td>
+                        <td th:text="${task.client}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(tasks)}">
+                        <td colspan="7">Aucune tâche trouvée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 1}" th:href="@{/task/all(page=${currentPage - 1}, perPage=10)}">Précédent</a>
+        <span>Page <span th:text="${currentPage}"></span></span>
+        <a th:if="${tasks.size() == 10}" th:href="@{/task/all(page=${currentPage + 1}, perPage=10)}">Suivant</a>
+    </div>
+    
+    <div th:replace="~{fragments/footer}"></div>
+</body>
+</html>
